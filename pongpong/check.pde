@@ -42,17 +42,20 @@ void checkWalls() {
     ball.x = ballSize.x/2;
     ballSpeed.x *= -rem; 
     ballSpeed.y *= rem;
+    shakeTime+=0.5;
   }
   if (ball.x > width - ballSize.x/2) { //right wall
     ball.x = width- ballSize.x/2;
     ballSpeed.x *= -rem; 
     ballSpeed.y *= rem;
+    shakeTime+=0.5;
   }
 
   if (ball.y < ballSize.y/2) { //top
     ball.y = ballSize.y/2;
     ballSpeed.x *= rem; 
     ballSpeed.y *= -rem;
+    shakeTime+=0.5;
   }
 
   if (ball.y > height - ballSize.y/2) { //bottom

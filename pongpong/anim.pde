@@ -44,14 +44,24 @@ void squooze() {
 }
 
 
-void showTrail(float frames, float a) {
+void showTrail(float frames, float a, boolean opt) {
+  frames = min(frames, ballTrail.length);
+  float count = 0;
+  if (!opt){
+    count = ballTrail.length;
+  } else {
+   count = frames; 
+  }
+  
+  /*
   if (frames > ballTrail.length) {
     if (frameCount == 1)  println("showTrail: more frames requested than stored in memory");
     return;
   }
+  */
 
-  print("balt ");
-  println(ballTrail);
+  //print("balt ");
+  //println(ballTrail);
 
   PVector[] temp = new PVector[ballTrail.length];
   /*
@@ -71,7 +81,7 @@ void showTrail(float frames, float a) {
    ballTrail[4] = temp[4].copy();
    */
 
-  for (int i = 0; i < frames; i++) {
+  for (int i = 0; i < count; i++) {
     if (i > 0) {
       temp[i] = ballTrail[i-1].copy();
     } else {
@@ -79,7 +89,7 @@ void showTrail(float frames, float a) {
     }
   }
 
-  for (int i = 0; i < frames; i++) {
+  for (int i = 0; i < count; i++) {
     ballTrail[i] = temp[i].copy();
 
     if (i < frames) {
@@ -88,9 +98,9 @@ void showTrail(float frames, float a) {
     }
   }
 
-  print("temp ");
-  println(temp);
+  //print("temp ");
+  //println(temp);
 
 
-  println();
+  //println();
 }

@@ -13,10 +13,13 @@ float mouseFDiff;
 
 PVector ballTrail[] = new PVector[30];
 
+float shakeTime;
+
 void setup() {
   println("SETUP");
   size(1920, 1080);
   strokeCap(PROJECT);
+  shakeTime = 0;
   squee = false;
   mouseFDiff = 10;
   //noStroke();
@@ -56,6 +59,7 @@ void setup() {
 
 
 void draw() {
+    shake(ballSpeed.x/10);
   //println("fr = " + frameRate);
   background(255);
   //fill(255, 200);
@@ -116,7 +120,11 @@ void draw() {
   //fill(0,100);
   ellipse(ball.x, ball.y, ballSize.x, ballSize.y);
   
-  showTrail(10, 5);
+  
+  float totSpeed = abs(ballSpeed.x) + abs(ballSpeed.y);
+  totSpeed /= 10.0;
+  println("totSpeed = " + totSpeed);
+  showTrail(totSpeed, 5, false);
   //if (mousePressed) setup(); //reset
   
   if (mousePressed) {
