@@ -11,7 +11,10 @@ boolean squee, squoo;
 PVector mouseForce;
 float mouseFDiff;
 
+PVector ballTrail[] = new PVector[30];
+
 void setup() {
+  println("SETUP");
   size(1920, 1080);
   strokeCap(PROJECT);
   squee = false;
@@ -19,6 +22,14 @@ void setup() {
   //noStroke();
   gravity = new PVector(0, 0.4);
   ball = new PVector(random(width), height/5);
+  
+  for (int i = 0; i < ballTrail.length; i++){
+    ballTrail[i] = new PVector(i,i);
+    
+    println(ballTrail);
+  }
+  
+  
  // if (ballSpeed == null){ //dont reset speed unless first time
     ballSpeed = new PVector(10, -10);
  // }
@@ -36,18 +47,28 @@ void setup() {
   frameRate(60);
 }
 
+
+
+
+
+
+
+
+
 void draw() {
   //println("fr = " + frameRate);
   background(255);
+  //fill(255, 200);
+  //rect(0,0,width,height);
   fill(255,0, 0, 0);
   mouseForce.set(mouseX - pmouseX, mouseY - pmouseY);
   mouseForce.normalize();
   mouseForce.mult(mouseFDiff);
-  println("mouseF = " + mouseForce);
+  //println("mouseF = " + mouseForce);
   
   //rect(0, 0, width, height); 
   //clock face attempt
-  fill(255);
+  fill(255, 100);
   strokeWeight(scaleStr);
   stroke(255,0,0);
   ellipse(points[1].x, points[1].y, width, width);
@@ -90,9 +111,12 @@ void draw() {
   if (squoo) squooze();
   
   ball.add(ballSpeed);
-  ballSpeed.add(gravity);
+  ballSpeed.add(gravity);//
   checkWalls();
+  //fill(0,100);
   ellipse(ball.x, ball.y, ballSize.x, ballSize.y);
+  
+  showTrail(10, 5);
   //if (mousePressed) setup(); //reset
   
   if (mousePressed) {
