@@ -23,15 +23,7 @@ void aboveLine(PVector b, PVector bS, PVector pt1, PVector pt2) {
     } else {
       if (above){
       println("just crossed from above");
-     
-       ballSpeed.x *= 1.1;
-      
-       ballSpeed.y *= -1.05;  
-       //ballSpeed.sub(gravity);
-       score+= value;
-       scaleStr+=10;
-       println("scored! score=" + score);
-       //ball.y = inter.y + 1;      
+       bounce();
       }
      above = false; 
     // fill(50,200,50);

@@ -7,9 +7,15 @@ boolean angleUp;
 float value = 0;
 float scaleStr;
 
+boolean squee, squoo;
+PVector mouseForce;
+float mouseFDiff;
+
 void setup() {
   size(1920, 1080);
   strokeCap(PROJECT);
+  squee = false;
+  mouseFDiff = 10;
   //noStroke();
   gravity = new PVector(0, 0.4);
   ball = new PVector(random(width), height/5);
@@ -26,12 +32,19 @@ void setup() {
     }
   }
   scaleStr = 100;
+  mouseForce = new PVector((mouseX - pmouseX), (mouseY - pmouseY));
+  frameRate(60);
 }
 
 void draw() {
+  //println("fr = " + frameRate);
   background(255);
   fill(255,0, 0, 0);
-  //println(bg);
+  mouseForce.set(mouseX - pmouseX, mouseY - pmouseY);
+  mouseForce.normalize();
+  mouseForce.mult(mouseFDiff);
+  println("mouseF = " + mouseForce);
+  
   //rect(0, 0, width, height); 
   //clock face attempt
   fill(255);
@@ -49,6 +62,7 @@ void draw() {
   points[0].set(mouseX,mouseY);
   points[1].add(gravity);
 
+/*
   float angle = PVector.angleBetween(points[0], points[1]);
   //println("angle= " + angle);
   if (points[1].y > points[0].y){
@@ -56,8 +70,8 @@ void draw() {
   } else {
    angleUp = false; 
   }
-  
-  
+  */
+  //draw paddle / clockhands/whatever
   fill(200,50,50);
   beginShape();
   curveVertex(points[0].x, height* 0.98);
@@ -71,6 +85,9 @@ void draw() {
   }
   curveVertex(points[points.length-1].x, height * 0.98);
   endShape();
+  
+  if (squee) squeeze(); 
+  if (squoo) squooze();
   
   ball.add(ballSpeed);
   ballSpeed.add(gravity);
