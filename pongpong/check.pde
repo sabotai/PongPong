@@ -66,6 +66,8 @@ void checkWalls() {
 
     if (!scoreMode.equals("circle")) {
       score = 0;
+      hitSnd.stop();
+      bounceSnd.stop();
       println("lost 1... score=" + score);
       background(100);
       setup();
@@ -115,6 +117,10 @@ void checkCircle() {
         }
         //ball = ballTrail[3];
         bg = 220;
+        //hitSnd.stop();
+          hitSnd.play();
+        
+        
         println("BOUNCE");
       }
     }

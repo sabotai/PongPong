@@ -1,3 +1,9 @@
+import processing.sound.*;
+
+SoundFile bounceSnd, hitSnd;
+
+
+
 PVector ball, ballSpeed, ballSize;
 PVector gravity;
 PVector[] points = new PVector[2];
@@ -23,6 +29,13 @@ String scoreMode = "circle";
 float bg;
   
 void setup() {
+  if (bounceSnd == null){
+    bounceSnd = new SoundFile(this, "Powerup7.wav");
+  }
+  
+  if (hitSnd == null){
+    hitSnd = new SoundFile(this, "Explosion9.wav");
+  }
   println("SETUP");
   size(1920, 1080);
   bg = 255;

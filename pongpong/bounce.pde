@@ -1,7 +1,11 @@
 
 
 void bounce(float xs, float ys, boolean scoring){
-  
+  float pan = (ball.x-width/2) / (width/2); //pan the sound
+
+  bounceSnd.pan(pan);   
+  bounceSnd.stop();
+  bounceSnd.play();
         ballSpeed.x *= xs;
         ballSpeed.y *= ys;
   
@@ -10,7 +14,7 @@ void bounce(float xs, float ys, boolean scoring){
        
        if (scoring){
          //score+= value;
-         if (value > 1){
+         if (value >= 0){
           score++; 
          }
          
