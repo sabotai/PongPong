@@ -1,18 +1,22 @@
 
 
-void bounce(){
+void bounce(float xs, float ys, boolean scoring){
   
-       ballSpeed.x *= 1.1;
-      
-       ballSpeed.y *= -1.05;  
+        ballSpeed.x *= xs;
+        ballSpeed.y *= ys;
+  
        
        ballSpeed.add(mouseForce);
-       //ballSpeed.div(1.5);
-       //ballSpeed.sub(gravity);
-       score+= value;
-       scaleStr+=10;
-       println("scored! score=" + score);
-       //ball.y = inter.y + 1;      
+       
+       if (scoring){
+         //score+= value;
+         if (value > 1){
+          score++; 
+         }
+         
+         scaleStr+=10;
+         println("scored! score=" + score);
+       }
        
        if (!squee){
          squee = true;

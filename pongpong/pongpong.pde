@@ -14,24 +14,29 @@ float mouseFDiff;
 PVector ballTrail[] = new PVector[30];
 
 float shakeTime;
+boolean movePos;
 
+PVector mouse;
+
+String scoreMode = "circle";
+
+float bg;
+  
 void setup() {
   println("SETUP");
   size(1920, 1080);
+  bg = 255;
   strokeCap(PROJECT);
+  movePos = false;
   shakeTime = 0;
   squee = false;
   mouseFDiff = 10;
   //noStroke();
   gravity = new PVector(0, 0.4);
-  ball = new PVector(random(width), height/5);
   
   for (int i = 0; i < ballTrail.length; i++){
     ballTrail[i] = new PVector(i,i);
-    
-    println(ballTrail);
   }
-  
   
  // if (ballSpeed == null){ //dont reset speed unless first time
     ballSpeed = new PVector(10, -10);
@@ -45,9 +50,11 @@ void setup() {
       points[i] = new PVector(random(0, width), random(height/2, height));
     }
   }
+  ball = new PVector(points[0].x, height/5 + points[1].y/3);
   scaleStr = 100;
   mouseForce = new PVector((mouseX - pmouseX), (mouseY - pmouseY));
   frameRate(60);
+  mouse = new PVector(mouseX, mouseY);
 }
 
 
@@ -59,9 +66,10 @@ void setup() {
 
 
 void draw() {
-    shake(ballSpeed.x/10);
+  
+  shake(ballSpeed.x/10);
   //println("fr = " + frameRate);
-  background(255);
+  background(bg);
   //fill(255, 200);
   //rect(0,0,width,height);
   fill(255,0, 0, 0);
@@ -72,7 +80,8 @@ void draw() {
   
   //rect(0, 0, width, height); 
   //clock face attempt
-  fill(255, 100);
+  fill(bg);
+  bg = 255;
   strokeWeight(scaleStr);
   stroke(255,0,0);
   ellipse(points[1].x, points[1].y, width, width);
@@ -80,7 +89,7 @@ void draw() {
   fill(0);
   rect(0, 0, width * value/5, 20);
   fill(255,0,0);
-  textSize(max(10, score));
+  textSize(max(10, score * 10));
   textAlign(CENTER);
   text("SCORE: " + score, width/2, height/2);
   
@@ -96,6 +105,7 @@ void draw() {
    angleUp = false; 
   }
   */
+  
   //draw paddle / clockhands/whatever
   fill(200,50,50);
   beginShape();
@@ -111,25 +121,35 @@ void draw() {
   curveVertex(points[points.length-1].x, height * 0.98);
   endShape();
   
+  //animate the ball squish
   if (squee) squeeze(); 
   if (squoo) squooze();
   
   ball.add(ballSpeed);
   ballSpeed.add(gravity);//
   checkWalls();
+  if (scoreMode.equals("circle")) checkCircle();
+  
   //fill(0,100);
   ellipse(ball.x, ball.y, ballSize.x, ballSize.y);
   
   
   float totSpeed = abs(ballSpeed.x) + abs(ballSpeed.y);
   totSpeed /= 10.0;
-  println("totSpeed = " + totSpeed);
+  //println("totSpeed = " + totSpeed);
   showTrail(totSpeed, 5, false);
-  //if (mousePressed) setup(); //reset
+  
+  if (movePos){
+    repose();
+  }
   
   if (mousePressed) {
-    PVector mouse = new PVector(mouseX, mouseY);
-    points[1] = PVector.lerp(points[1], mouse, 0.1);
-    //points[1].set(mouseX, mouseY);
+    mouse.set(mouseX, mouseY);
   }
+}
+
+void mousePressed(){
+    movePos = true;
+    mouse.set(mouseX, mouseY);
+  
 }
