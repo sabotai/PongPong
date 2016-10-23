@@ -4,6 +4,7 @@ import processing.sound.*;
 SoundFile bounceSnd, hitSnd;
 
 boolean debug;
+boolean pause = false;
 
 PVector ball, ballSpeed, ballSize;
 PVector gravity;
@@ -25,22 +26,24 @@ boolean movePos;
 
 PVector mouse;
 
-String scoreMode = "other";
+String scoreMode = "circle";
 
 float bg;
 
-color c1, c2, c3, c4;
+color c1, c2, c3, c4, ballColor;
 
 boolean armFree; //keep track of whether the arm is allowed to move (so ball doesnt get stuck)
 int lastBounce, bounceThresh;  
 float ballRad; //keep track of the largest ballSize variable (for collisions)
 
 void setup() {
-  debug = true;
+  debug = false;
   c1 = color(200, 250, 250);
   c2 = color(250, 200, 200);
   c3 = color(50, 50, 50);
   c4 = color(240, 240, 240);
+  ballColor = c3;
+  
   lastBounce = 5;
   bounceThresh = 1;
   size(1920, 1080);
@@ -58,7 +61,7 @@ void setup() {
   movePos = false;
   shakeTime = 0;
   squee = false;
-  mouseFDiff = 10;
+  mouseFDiff = 25;
   //noStroke();
   gravity = new PVector(0, 0.4);
 
@@ -78,7 +81,7 @@ void setup() {
       points[i] = new PVector(random(0, width), random(height/2, height));
     }
   }
-  ball = new PVector(points[0].x, height/5 + points[1].y/3);
+  ball = new PVector(points[1].x, points[1].y - width/3);
   scaleStr = 100;
   mouseForce = new PVector((mouseX - pmouseX), (mouseY - pmouseY));
   frameRate(60);
@@ -106,7 +109,7 @@ void draw() {
   //rect(0,0,width,height);
   mouseForce.set(mouseX - pmouseX, mouseY - pmouseY);
   mouseForce.normalize();
-  mouseForce.mult(mouseFDiff);
+  mouseForce.mult(mouseFDiff + 0);
   //println("mouseF = " + mouseForce);
 
   //rect(0, 0, width, height); 
@@ -125,19 +128,15 @@ void draw() {
   rect(0, 0, width * value/5, 20);
   fill(c4);
   float txtSize = constrain(score * 10, 10, 600);
-  textSize(txtSize);
   textAlign(CENTER);
-  text("" + score, width/2, height/2);
+  if (!pause){
+    textSize(txtSize);
+    text("" + score, width/2, height/2);
+  } else {
+    textSize(400);
+    text("[ PAUSED ]", width/2, height/2);
+  }
 
-  /*
-  float angle = PVector.angleBetween(points[0], points[1]);
-   //println("angle= " + angle);
-   if (points[1].y > points[0].y){
-   angleUp = true; 
-   } else {
-   angleUp = false; 
-   }
-   */
 
   //draw paddle / clockhands/whatever
   fill(c3);
@@ -145,7 +144,7 @@ void draw() {
   curveVertex(points[0].x, height* 0.98);
   for (int i = 0; i < points.length; i++) {
     curveVertex(points[i].x, points[i].y);
-    ellipse(points[i].x, points[i].y, 20, 20); 
+    ellipse(points[i].x, points[i].y, i * 20, i * 20); 
     if (i>0) {
       line(points[i].x, points[i].y, points[i-1].x, points[i-1].y);
     }
@@ -164,7 +163,7 @@ void draw() {
   if (squee) squeeze(); 
   if (squoo) squooze();
 
-  //fill(0,100);
+  fill(ballColor);
   ellipse(ball.x, ball.y, ballSize.x, ballSize.y);
 
 
@@ -182,7 +181,7 @@ void draw() {
   }
   
   
-  if (armFree) points[0].set(mouseX, mouseY);
+  points[0].set(mouseX, mouseY);
   points[1].add(gravity);
 
 
@@ -197,9 +196,14 @@ void mousePressed() {
 
 
 void keyPressed() {
-  noLoop();
-}
-
-void keyReleased() {
-  loop();
+  pause = !pause;
+  
+  if (pause){
+    fill(c4 );
+    textSize(300);
+    text("[ PAUSED ]", width/2, height/2);
+    noLoop();
+  } else {
+   loop(); 
+  }
 }

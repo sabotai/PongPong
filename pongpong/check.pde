@@ -6,9 +6,7 @@ void checkLine(PVector b, PVector bS, PVector pt1, PVector pt2) {
   boolean justCross = false;
   value = int(abs(5 * (100/w))); //currently only showing based on x distances
   //println(value);
-  //if (w > 100){ //distance too great to make points
-  fill(max(red(c3), 255-abs(w+h))); //the color c3 is monochromatic, so just trying to retrieve one of the values
-  //}
+  //if (w > 100){ //distance too great to make points  //}
   PVector xInter = new PVector(0,0);
   PVector yInter = new PVector(0,0);
   PVector xyDist = new PVector(0,0);
@@ -65,11 +63,28 @@ void checkLine(PVector b, PVector bS, PVector pt1, PVector pt2) {
     xyDist.set(xInter.dist(b), yInter.dist(b));
     PVector oldxyDist = new PVector(xInter.dist(ballTrail[1]), yInter.dist(ballTrail[1]));
     float currentDist = min(xyDist.x, xyDist.y);
-    float prevDist = min(oldxyDist.x, oldxyDist.y);
+    float prevDist = min(oldxyDist.x, oldxyDist.y);  ballColor = color(max(red(c3), 255-abs(currentDist))); //the color c3 is monochromatic, so just trying to retrieve one of the values
     
     xyDist.set(xInter.y - b.y, yInter.x - b.x);
     xyDist = xyDist.normalize();
     print(" justCross=" + justCross);
+    
+  
+    float angle = PVector.angleBetween(points[1], points[0]);
+     println(" angle= " + degrees(angle));
+     if (points[1].y > points[0].y){
+     angleUp = true; 
+     } else {
+     angleUp = false; 
+     }
+   
+    
+    
+    
+    
+    
+    
+    
     if (debug) print(" currentdist= "+ currentDist+ "  prevDist= " + prevDist);
     //if (currentDist < prevDist) {
       if (min(prevDist, currentDist) < ballRad) {
@@ -84,6 +99,9 @@ void checkLine(PVector b, PVector bS, PVector pt1, PVector pt2) {
      // }
       }
   } 
+  
+
+
   if (debug) {
     
     //if (yInter != new PVector(0,0)){
@@ -154,21 +172,31 @@ void checkCircle() {
   //println("cirdist = " + cirDist);
   float cirThresh = (width/2)-ballRad*2;
 
-  if (cirDist > cirThresh) {
+  if (cirDist > cirThresh - scaleStr/3) {
     if (scoreMode.equals("circle")) {
 
 
-      scaleStr = 10; //debug to stop the game from ending
+      //scaleStr = 10; //debug to stop the game from ending
       if (scaleStr <= 0) {
         score = 0;
-        //println("lost 1... score=" + score);
+        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
+        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
+        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
+        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
+        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
+        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
         background(100);
         setup();
       } else {
+        println(" STROKE= " + scaleStr);
+        println(" STROKE= " + scaleStr);
+        println(" STROKE= " + scaleStr);
+        println(" STROKE= " + scaleStr);
+        println(" STROKE= " + scaleStr);
         //score--;
 
         scaleStr-=10;
-        scaleStr = max(scaleStr, 0);
+        //scaleStr = max(scaleStr, 0);
 
 
         ball.sub(ballSpeed);

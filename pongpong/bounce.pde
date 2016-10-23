@@ -26,13 +26,26 @@ void bounce(float xs, float ys, boolean scoring) {
       
     }
     
+    ballSpeed.mult(0.9); //entropy/resistance upon impacts
+    PVector randomDir = new PVector(random(0,100), random(0,100), 0);
+    randomDir.normalize(); //make a direction
+    randomDir.mult(0.1);
+    randomDir.add(new PVector(1,1,1)); //make it 1% for mult
+    println("");
+    print("rando=" + randomDir);
+    println("");
+    xs *= randomDir.x;
+    ys *= randomDir.y;
     
     if (debug) print(" oldSpeed=" + ballSpeed);
     ballSpeed.x *= xs;
     ballSpeed.y *= ys;
     if (debug) print(" newSpeed=" + ballSpeed);
 
-
+    
+    
+    
+    
     if (scoring) {
       //score+= value;
       ballSpeed.add(mouseForce);
