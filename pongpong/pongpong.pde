@@ -62,9 +62,9 @@ void setup() {
   
   
   minim = new Minim(this);
-  bounceSnd = minim.loadFile("Jump36.wav", 2048);
+  bounceSnd = minim.loadFile("38867__m-red__clock-tac.wav", 2048);
   hitSnd = minim.loadFile("Hit_Hurt26.wav", 2048);
-  loseSnd = minim.loadFile("lose.wav", 2048);
+  loseSnd = minim.loadFile("253174__suntemple__retro-you-lose-sfx.wav", 2048);
   if (mute){
     bounceSnd.mute();
     hitSnd.mute();

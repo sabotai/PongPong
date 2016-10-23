@@ -8,7 +8,7 @@ void bounce(float xs, float ys, boolean scoring) {
     if (debug) print(" BOUNCE");
     float vol = map(abs(ballSpeed.x) + abs(ballSpeed.y), 0, 50, 0, 5 );
     if (debug) print(" vol=" + vol);
-    bounceSnd.setGain(-5);
+    bounceSnd.setGain(-8);
     hitSnd.setGain(vol);
     lastBounce = 0;
     //bounceSnd.setPan(pan);   
