@@ -7,10 +7,10 @@ void shake(float mag){
       
     if (shakeTime > 0f) {
       shakeTime -= (frameRate/60.0) * (1.0/60.0);
-      println("time = " + shakeTime);
+      //println("time = " + shakeTime);
       PVector newPos = originalPos.add(new PVector(1,0,0).mult(sin(millis()) * shakeTime * mag)); 
       translate(newPos.x, newPos.y);
-      println("newPos = " + newPos);
+      //println("newPos = " + newPos);
     } else {
       translate(originalPos.x, originalPos.y);
     }
