@@ -6,10 +6,16 @@ void bounce(float xs, float ys, boolean scoring) {
 
   if (lastBounce > bounceThresh){// && (ball.dist(ballTrail[0]) > bounceThresh)) { //time since last bounce protection mechanism and more than 2 pixels apart from last loc
     if (debug) print(" BOUNCE");
+    float vol = map(abs(ballSpeed.x) + abs(ballSpeed.y), 0, 50, 0, 5 );
+    if (debug) print(" vol=" + vol);
+    bounceSnd.setGain(-5);
+    hitSnd.setGain(vol);
     lastBounce = 0;
-    //bounceSnd.pan(pan);   
-    //bounceSnd.stop();
-    //bounceSnd.play();
+    //bounceSnd.setPan(pan);   
+    //bounceSnd
+    //hitSnd.setPan(pan);
+    bounceSnd.rewind();
+    bounceSnd.play();
     
     
     //attempt at correcting weird problem which would reverse the ys after being passed in

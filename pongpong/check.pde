@@ -179,6 +179,7 @@ void checkCircle() {
       //scaleStr = 10; //debug to stop the game from ending
       if (scaleStr <= 0) {
         score = 0;
+        loseSnd.play();
         println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
         println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
         println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
@@ -221,8 +222,8 @@ void checkCircle() {
         }
         //ball = ballTrail[3];
         bg = 220;
-        //hitSnd.stop();
-        // hitSnd.play();
+        hitSnd.rewind();
+         hitSnd.play();
       }
     }
   }

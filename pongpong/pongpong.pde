@@ -1,10 +1,22 @@
+import ddf.minim.*;
+import ddf.minim.analysis.*;
+import ddf.minim.effects.*;
+import ddf.minim.signals.*;
+import ddf.minim.spi.*;
+import ddf.minim.ugens.*;
+
+Minim minim;
+AudioPlayer bounceSnd, hitSnd, loseSnd;
+
+
 //import processing.sound.*;
 
 
 //SoundFile bounceSnd, hitSnd;
 
-boolean debug;
+boolean debug = true;
 boolean pause = false;
+boolean mute = false;
 
 PVector ball, ballSpeed, ballSize;
 PVector gravity;
@@ -37,7 +49,7 @@ int lastBounce, bounceThresh;
 float ballRad; //keep track of the largest ballSize variable (for collisions)
 
 void setup() {
-  debug = false;
+  size(1920, 1080);
   c1 = color(200, 250, 250);
   c2 = color(250, 200, 200);
   c3 = color(50, 50, 50);
@@ -46,8 +58,18 @@ void setup() {
   
   lastBounce = 5;
   bounceThresh = 1;
-  size(1920, 1080);
   armFree = true;
+  
+  
+  minim = new Minim(this);
+  bounceSnd = minim.loadFile("Jump36.wav", 2048);
+  hitSnd = minim.loadFile("Hit_Hurt26.wav", 2048);
+  loseSnd = minim.loadFile("lose.wav", 2048);
+  if (mute){
+    bounceSnd.mute();
+    hitSnd.mute();
+    loseSnd.mute();
+  }
   //if (bounceSnd == null){
   //bounceSnd = new SoundFile(this, "Powerup7.wav");
   //}
@@ -125,7 +147,7 @@ void draw() {
   }
   noStroke();
   fill(0);
-  rect(0, 0, width * value/5, 20);
+  //rect(0, 0, width * value/5, 20); //top meter
   fill(c4);
   float txtSize = constrain(score * 10, 10, 600);
   textAlign(CENTER);
