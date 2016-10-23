@@ -106,7 +106,6 @@ void setup() {
   ball = new PVector(points[1].x, points[1].y - width/5);
   scaleStr = 100;
   mouseForce = new PVector((mouseX - pmouseX), (mouseY - pmouseY));
-  frameRate(60);
   mouse = new PVector(mouseX, mouseY);
 }
 
@@ -164,7 +163,7 @@ void draw() {
   fill(c3);
   beginShape();
   curveVertex(points[0].x, height* 0.98);
-  for (int i = 0; i < points.length; i++) {
+  for (int i = 0; i < 2; i++) {
     curveVertex(points[i].x, points[i].y);
     ellipse(points[i].x, points[i].y, i * 20, i * 20); 
     if (i>0) {
