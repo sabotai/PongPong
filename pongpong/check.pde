@@ -172,7 +172,7 @@ void checkCircle() {
   //println("cirdist = " + cirDist);
   float cirThresh = (width/2)-ballRad*2;
 
-  if (cirDist > cirThresh - scaleStr/3) {
+  if (cirDist > cirThresh - scaleStr/5) {
     if (scoreMode.equals("circle")) {
 
 

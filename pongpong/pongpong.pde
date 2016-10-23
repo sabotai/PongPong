@@ -1,7 +1,7 @@
-import processing.sound.*;
+//import processing.sound.*;
 
 
-SoundFile bounceSnd, hitSnd;
+//SoundFile bounceSnd, hitSnd;
 
 boolean debug;
 boolean pause = false;
@@ -81,7 +81,7 @@ void setup() {
       points[i] = new PVector(random(0, width), random(height/2, height));
     }
   }
-  ball = new PVector(points[1].x, points[1].y - width/3);
+  ball = new PVector(points[1].x, points[1].y - width/5);
   scaleStr = 100;
   mouseForce = new PVector((mouseX - pmouseX), (mouseY - pmouseY));
   frameRate(60);
@@ -201,7 +201,7 @@ void keyPressed() {
   if (pause){
     fill(c4 );
     textSize(300);
-    text("[ PAUSED ]", width/2, height/2);
+    text("[ PAUSED ]", width/2, height/1.3);
     noLoop();
   } else {
    loop(); 
