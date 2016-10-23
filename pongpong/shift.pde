@@ -9,6 +9,8 @@ void repose() {
   } else {
     
     points[1] = PVector.lerp(points[1], mouse, 0.1);
+    
+
   if (scoreMode.equals("circle")) {checkCircle();}
     //points[1].set(mouseX, mouseY);
   }

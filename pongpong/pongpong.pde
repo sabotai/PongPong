@@ -21,6 +21,8 @@ boolean mute = false;
 PVector ball, ballSpeed, ballSize;
 PVector gravity;
 PVector[] points = new PVector[2];
+PVector hourHand = new PVector();
+float angle, hourAngle;
 boolean above, left;
 int score = 0;
 boolean angleUp;
@@ -55,17 +57,18 @@ void setup() {
   c3 = color(50, 50, 50);
   c4 = color(240, 240, 240);
   ballColor = c3;
-  
+  hourAngle = 1;
+
   lastBounce = 5;
   bounceThresh = 1;
   armFree = true;
-  
-  
+
+
   minim = new Minim(this);
   bounceSnd = minim.loadFile("38867__m-red__clock-tac.wav", 2048);
   hitSnd = minim.loadFile("Hit_Hurt26.wav", 2048);
   loseSnd = minim.loadFile("253174__suntemple__retro-you-lose-sfx.wav", 2048);
-  if (mute){
+  if (mute) {
     bounceSnd.mute();
     hitSnd.mute();
     loseSnd.mute();
@@ -103,6 +106,7 @@ void setup() {
       points[i] = new PVector(random(0, width), random(height/2, height));
     }
   }
+  hourHand = new PVector(points[1].x, points[1].y - width/4); 
   ball = new PVector(points[1].x, points[1].y - width/5);
   scaleStr = 100;
   mouseForce = new PVector((mouseX - pmouseX), (mouseY - pmouseY));
@@ -137,7 +141,7 @@ void draw() {
   //clock face attempt
   fill(bg);
   bg = 255;
-  if (scoreMode == "circle" ){
+  if (scoreMode == "circle" ) {
     strokeWeight(scaleStr);
     stroke(200, 250, 250);
     stroke(c3);
@@ -150,7 +154,7 @@ void draw() {
   fill(c4);
   float txtSize = constrain(score * 10, 10, 600);
   textAlign(CENTER);
-  if (!pause){
+  if (!pause) {
     textSize(txtSize);
     text("" + score, width/2, height/2);
   } else {
@@ -163,7 +167,7 @@ void draw() {
   fill(c3);
   beginShape();
   curveVertex(points[0].x, height* 0.98);
-  for (int i = 0; i < 2; i++) {
+  for (int i = 0; i < points.length; i++) {
     curveVertex(points[i].x, points[i].y);
     ellipse(points[i].x, points[i].y, i * 20, i * 20); 
     if (i>0) {
@@ -172,8 +176,57 @@ void draw() {
   }
   curveVertex(points[points.length-1].x, height * 0.98);
   endShape();
+  
+    float currentAngle = PVector.angleBetween(points[1], points[0]);
+    if (angle != currentAngle){
+      angle -= currentAngle;
+     println(" angle= " + degrees(angle));
+    } else {
+     angle = 0; 
+    }
+     hourAngle = angle;
+    //}
 
+  pushMatrix();
+    translate(points[1].x, points[1].y);
+  
+    hourHand.set(50, -width/4); 
+    float rota = map(sin(frameCount), -1, 1, 0, 360);
+    if (debug) print(" degRot= " +rota);
+    rotate(-hourAngle/60);
+    //draw hour hand
+    //fill(random(255), 255, 255);
+    beginShape();
+    curveVertex(hourHand.x, height/2);
+    curveVertex(hourHand.x, hourHand.y);
+    curveVertex(0, 0);
+    //ellipse(hourHand.x, hourHand.y, 100, 100);
+    //curveVertex(points[1].x, points[1].y);
+    line(0, 0, hourHand.x, hourHand.y);
+    curveVertex(hourHand.x, height/2);
+    endShape();
 
+  popMatrix();
+  
+  /* OLD HOUR HAND
+  
+      hourHand.set(points[1].x-5, points[1].y - width/4); 
+    //draw hour hand
+    //fill(random(255), 255, 255);
+    beginShape();
+    curveVertex(hourHand.x, height* 0.98);
+    curveVertex(hourHand.x, hourHand.y);
+    curveVertex(points[1].x, points[1].y);
+    //ellipse(hourHand.x, hourHand.y, 100, 100);
+    //curveVertex(points[1].x, points[1].y);
+    line(points[1].x, points[1].y, hourHand.x, hourHand.y);
+    curveVertex(hourHand.x, height * 0.98);
+    endShape();
+    
+    */
+  
+  
+  
   ballSpeed.add(gravity);//
   //ballSpeed.set(0, 0);
   checkLine(ball, ballSize, points[1], points[0]);
@@ -200,8 +253,8 @@ void draw() {
   if (mousePressed) {
     mouse.set(mouseX, mouseY);
   }
-  
-  
+
+
   points[0].set(mouseX, mouseY);
   points[1].add(gravity);
 
@@ -218,13 +271,13 @@ void mousePressed() {
 
 void keyPressed() {
   pause = !pause;
-  
-  if (pause){
+
+  if (pause) {
     fill(c4 );
     textSize(300);
     text("[ PAUSED ]", width/2, height/1.3);
     noLoop();
   } else {
-   loop(); 
+    loop();
   }
 }

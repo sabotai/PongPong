@@ -70,13 +70,6 @@ void checkLine(PVector b, PVector bS, PVector pt1, PVector pt2) {
     print(" justCross=" + justCross);
     
   
-    float angle = PVector.angleBetween(points[1], points[0]);
-     println(" angle= " + degrees(angle));
-     if (points[1].y > points[0].y){
-     angleUp = true; 
-     } else {
-     angleUp = false; 
-     }
    
     
     
