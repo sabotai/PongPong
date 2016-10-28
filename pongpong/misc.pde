@@ -32,3 +32,16 @@ String findDir(){
   */
   return dir;
 }
+
+
+void runShader(){
+ 
+  float speeds = (millis()) / 100;
+  shad.set("u_time", speeds);
+  shad.set("u_contrast", 0.7, 0.75);
+  PVector ccolor = new PVector(red(c1), green(c1), blue(c1));
+  ccolor.div(255);
+  shad.set("u_color", ccolor.x, ccolor.y, ccolor.z);
+  shad.set("u_mouse", float(mouseX), float(mouseY));
+  filter(shad);   
+}

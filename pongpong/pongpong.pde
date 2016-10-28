@@ -8,13 +8,15 @@ import ddf.minim.ugens.*;
 Minim minim;
 AudioPlayer bounceSnd, hitSnd, loseSnd;
 
+PShader shad;
+
 
 //import processing.sound.*;
 
 
 //SoundFile bounceSnd, hitSnd;
 
-boolean debug = true;
+boolean debug = false;
 boolean pause = false;
 boolean mute = false;
 
@@ -51,7 +53,10 @@ int lastBounce, bounceThresh;
 float ballRad; //keep track of the largest ballSize variable (for collisions)
 
 void setup() {
-  size(1920, 1080);
+  size(1920, 1080, P3D);
+  shad = loadShader("lava.frag");
+  shad.set("u_resolution", float(width), float(height));
+  shad.set("u_color", 0.1, 0.75);
   c1 = color(200, 250, 250);
   c2 = color(250, 200, 200);
   c3 = color(50, 50, 50);
@@ -88,7 +93,7 @@ void setup() {
   squee = false;
   mouseFDiff = 25;
   //noStroke();
-  gravity = new PVector(0, 0.4);
+  gravity = new PVector(0, 0);
 
   for (int i = 0; i < ballTrail.length; i++) {
     ballTrail[i] = new PVector(i, i);
@@ -129,7 +134,9 @@ void draw() {
   shake(ballSpeed.x/10);
   //println("fr = " + frameRate);
   //background(200, 200, bg);
-  background(c1);
+  //background(c1);
+  runShader();
+  
   //fill(255, 200);
   //rect(0,0,width,height);
   mouseForce.set(mouseX - pmouseX, mouseY - pmouseY);
@@ -169,23 +176,32 @@ void draw() {
   curveVertex(points[0].x, height* 0.98);
   for (int i = 0; i < points.length; i++) {
     curveVertex(points[i].x, points[i].y);
-    ellipse(points[i].x, points[i].y, i * 20, i * 20); 
-    if (i>0) {
-      line(points[i].x, points[i].y, points[i-1].x, points[i-1].y);
-    }
   }
   curveVertex(points[points.length-1].x, height * 0.98);
   endShape();
+    ellipse(points[1].x, points[1].y, 20, 20); 
+      line(points[1].x, points[1].y, points[0].x, points[0].y);
+    
   
     float currentAngle = PVector.angleBetween(points[1], points[0]);
-    if (angle != currentAngle){
+    //divide angle by radius
+    float handRad = dist(points[0].x, points[0].y, points[1].x, points[1].y);
+    currentAngle = degrees(currentAngle) / handRad;
+    
+      println();
+     println(" angle= " + angle + " currentAngle= " + currentAngle);
+    if (degrees(angle) - degrees(currentAngle) < 2){
+      //angle = 0;
+      println("adding ANGLE");
+      angle = 0;
       angle -= currentAngle;
-     println(" angle= " + degrees(angle));
     } else {
+      println("RESETtING ANGLE");
      angle = 0; 
     }
-     hourAngle = angle;
+     hourAngle = -angle/6;
     //}
+
 
   pushMatrix();
     translate(points[1].x, points[1].y);
@@ -202,10 +218,10 @@ void draw() {
     curveVertex(0, 0);
     //ellipse(hourHand.x, hourHand.y, 100, 100);
     //curveVertex(points[1].x, points[1].y);
-    line(0, 0, hourHand.x, hourHand.y);
     curveVertex(hourHand.x, height/2);
     endShape();
 
+    line(0, 0, hourHand.x, hourHand.y);
   popMatrix();
   
   /* OLD HOUR HAND
