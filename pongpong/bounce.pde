@@ -67,7 +67,7 @@ void bounce(float xs, float ys, boolean scoring) {
         score++;
       }
 
-      scaleStr+=3;
+      scaleStr = scaleStr + int(strokeDiff * 0.5);
       //println("scored! score=" + score);
     }
 

@@ -100,3 +100,17 @@ void calcMForce() {
   mouseForce.mult(mouseFDiff + 0);
   //println("mouseF = " + mouseForce);
 }
+
+void loseReset(){
+  score = 0;
+        //loseSnd.play();
+        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
+        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
+        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
+        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
+        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
+        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
+        ball.set(width/2, height/2); //prevent collision glitch before restarting
+        background(100);
+        setup();
+}

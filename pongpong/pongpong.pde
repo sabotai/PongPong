@@ -20,6 +20,7 @@ PFont myFont;
 boolean debug = false;
 boolean pause = false;
 boolean mute = false;
+boolean reset = false;
 
 PVector ball, ballSpeed, ballSize;
 PVector gravity;
@@ -30,7 +31,7 @@ boolean above, left;
 int score = 0;
 boolean angleUp;
 float value = 0;
-float scaleStr;
+int scaleStr;
 float clockDia;
 
 boolean squee, squoo;
@@ -55,29 +56,38 @@ int lastBounce, bounceThresh;
 float ballRad; //keep track of the largest ballSize variable (for collisions
 
 
-  PVector xInter = new PVector(0,0);
-  PVector yInter = new PVector(0,0);
-  PVector xyDist = new PVector(0,0);
-PVector xyInter = new PVector(0,0); //xyinter represents the closest inter to the ball
+PVector xInter = new PVector(0, 0);
+PVector yInter = new PVector(0, 0);
+PVector xyDist = new PVector(0, 0);
+PVector xyInter = new PVector(0, 0); //xyinter represents the closest inter to the ball
 
 PImage txtr;
+float strokeDiff;
 
 void setup() {
-  size(1920, 1080, P3D);
-smooth(8); //may not work everywhere
-  minim = new Minim(this);
-  rumbleSnd = minim.loadFile("57532__dolfeus__earthshake-7kick8.wav");
-  bounceSnd = minim.loadFile("38867__m-red__clock-tac.wav", 2048);
-  hitSnd = minim.loadFile("Hit_Hurt26.wav", 2048);
-  loseSnd = minim.loadFile("253174__suntemple__retro-you-lose-sfx.wav", 2048);
-    rumbleSnd.setGain(-9);
-  txtr = loadImage("bricks.jpg");
+  size(1920, 1080, P2D);
+  smooth(8); //may not work everywhere
+  //frameRate(60);
+    minim = new Minim(this);
+  if (!reset) {
+    rumbleSnd = minim.loadFile("57532__dolfeus__earthshake-7kick8.wav");
+    bounceSnd = minim.loadFile("38867__m-red__clock-tac.wav", 2048);
+    hitSnd = minim.loadFile("Hit_Hurt26.wav", 2048);    rumbleSnd.setGain(-9);
+    txtr = loadImage("bricks.jpg");
+    shader1 = loadShader("glow_static.frag");
+    myFont = createFont("neuropol.ttf", 180);
+    textMode(SHAPE);
+    textFont(myFont);
+  } else {
+    loseSnd = minim.loadFile("253174__suntemple__retro-you-lose-sfx.wav", 2048);
+    loseSnd.rewind();
+    loseSnd.play(); 
+  }
   if (mute) {
     bounceSnd.mute();
     hitSnd.mute();
     loseSnd.mute();
   }
-  shader1 = loadShader("glow_static.frag");
   shader1.set("u_resolution", float(width), float(height));
   shader1.set("u_color", 0.1f, 0.75f);
   shader1.set("u_mouse", mouseX, mouseY);
@@ -94,13 +104,14 @@ smooth(8); //may not work everywhere
   bounceThresh = 1;
   armFree = true;
   if (debug) println("SETUP");
-  
+
   bg = 250;
-  strokeCap(PROJECT);
+  //strokeCap(PROJECT);
   movePos = false;
   shakeTime = 0;
   squee = false;
   mouseFDiff = 25;
+  strokeDiff = 15;
   //noStroke();
   gravity = new PVector(0, 0.4);
 
@@ -113,25 +124,22 @@ smooth(8); //may not work everywhere
   above = true;
   if (points[0] == null) {
     //for (int i = 0; i < points.length; i++) {
-      //randomly on bottom half of screen
-      points[0] = new PVector(random(0, width), random(height/2, height));
-      points[1] = new PVector(width/2, height/1.3);
+    //randomly on bottom half of screen
+    points[0] = new PVector(random(0, width), random(height/2, height));
+    points[1] = new PVector(width/2, height/1.3);
+  ball = new PVector(points[1].x, points[1].y - width/5);
     //}
   } else {
-      mouse.set(random(width/3, width/1.5), random(height/2, height));
-      movePos = true;
-      repose();
-    
+    mouse.set(random(width/3, width/1.5), random(height/2, height));
+    movePos = true;
+    repose();
+    ball = new PVector(mouse.x, mouse.y - width/5);
   }
   hourHand = new PVector(points[1].x, points[1].y - width/4); 
-  ball = new PVector(points[1].x, points[1].y - width/5);
   scaleStr = 10;
   mouseForce = new PVector((mouseX - pmouseX), (mouseY - pmouseY));
   mouse = new PVector(mouseX, mouseY);
-  
-  myFont = createFont("neuropol.ttf", 180);
-  textMode(SHAPE);
-  textFont(myFont);
+  reset = true;
 }
 
 
@@ -168,17 +176,17 @@ void draw() {
 
 
   if (debug) println();
-  
+
   /*
   fill(150);
-  strokeWeight(150);
-  //noStroke();
-  ellipse(mouseX, mouseY, 1000, 1000);
-  textSize(800);
-  fill(c2);
-  stroke(c2);
-  text("ewtawetasdf", width/2, height/2);
-  */
+   strokeWeight(150);
+   //noStroke();
+   //ellipse(mouseX, mouseY, 1000, 1000);
+   textSize(200);
+   fill(c2);
+   stroke(c2);
+   text("fr=" + (int)frameRate, width/2, height/2);
+   */
 }
 
 void mousePressed() {

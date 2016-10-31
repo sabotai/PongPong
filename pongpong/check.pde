@@ -169,16 +169,7 @@ void checkCircle() {
 
       //scaleStr = 10; //debug to stop the game from ending
       if (scaleStr <= 0) {
-        score = 0;
-        loseSnd.play();
-        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
-        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
-        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
-        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
-        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
-        println("LOSELOSELOSELOSELOSELOSELOSELOSELOSELOSELOSE");
-        background(100);
-        setup();
+        loseReset();
       } else {
         println(" STROKE= " + scaleStr);
         println(" STROKE= " + scaleStr);
@@ -187,7 +178,9 @@ void checkCircle() {
         println(" STROKE= " + scaleStr);
         //score--;
 
-        scaleStr-=5;
+        scaleStr -= strokeDiff;
+        if (scaleStr <= 0) loseReset();
+        
         //scaleStr = max(scaleStr, 0);
 
 
