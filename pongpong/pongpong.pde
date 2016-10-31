@@ -8,7 +8,7 @@ import ddf.minim.ugens.*;
 Minim minim;
 AudioPlayer bounceSnd, hitSnd, loseSnd;
 
-PShader shad;
+PShader shader1;
 
 
 //import processing.sound.*;
@@ -18,7 +18,7 @@ PShader shad;
 
 boolean debug = false;
 boolean pause = false;
-boolean mute = false;
+boolean mute = true;
 
 PVector ball, ballSpeed, ballSize;
 PVector gravity;
@@ -50,25 +50,16 @@ color c1, c2, c3, c4, ballColor;
 
 boolean armFree; //keep track of whether the arm is allowed to move (so ball doesnt get stuck)
 int lastBounce, bounceThresh;  
-float ballRad; //keep track of the largest ballSize variable (for collisions)
+float ballRad; //keep track of the largest ballSize variable (for collisions
+
+
+  PVector xInter = new PVector(0,0);
+  PVector yInter = new PVector(0,0);
+  PVector xyDist = new PVector(0,0);
+PVector xyInter = new PVector(0,0); //xyinter represents the closest inter to the ball
 
 void setup() {
   size(1920, 1080, P3D);
-  shad = loadShader("lava.frag");
-  shad.set("u_resolution", float(width), float(height));
-  shad.set("u_color", 0.1, 0.75);
-  c1 = color(200, 250, 250);
-  c2 = color(250, 200, 200);
-  c3 = color(50, 50, 50);
-  c4 = color(240, 240, 240);
-  ballColor = c3;
-  hourAngle = 1;
-
-  lastBounce = 5;
-  bounceThresh = 1;
-  armFree = true;
-
-
   minim = new Minim(this);
   bounceSnd = minim.loadFile("38867__m-red__clock-tac.wav", 2048);
   hitSnd = minim.loadFile("Hit_Hurt26.wav", 2048);
@@ -78,6 +69,20 @@ void setup() {
     hitSnd.mute();
     loseSnd.mute();
   }
+  shader1 = loadShader("glow_static.frag");
+  shader1.set("u_resolution", float(width), float(height));
+  shader1.set("u_color", 0.1f, 0.75f);
+  shader1.set("u_mouse", mouseX, mouseY);
+  c1 = color(200, 250, 250); //0.784, 0.98, 0.98
+  c2 = color(250, 200, 200); //0.98, 0.784, 0.784
+  c3 = color(50, 50, 50);
+  c4 = color(240, 240, 240);
+  ballColor = c3;
+  hourAngle = 1;
+
+  lastBounce = 5;
+  bounceThresh = 1;
+  armFree = true;
   //if (bounceSnd == null){
   //bounceSnd = new SoundFile(this, "Powerup7.wav");
   //}
@@ -93,7 +98,7 @@ void setup() {
   squee = false;
   mouseFDiff = 25;
   //noStroke();
-  gravity = new PVector(0, 0);
+  gravity = new PVector(0, 0.4);
 
   for (int i = 0; i < ballTrail.length; i++) {
     ballTrail[i] = new PVector(i, i);
@@ -107,7 +112,6 @@ void setup() {
   if (points[0] == null) {
     for (int i = 0; i < points.length; i++) {
       //randomly on bottom half of screen
-
       points[i] = new PVector(random(0, width), random(height/2, height));
     }
   }
@@ -127,152 +131,26 @@ void setup() {
 
 
 void draw() {
-  if (debug) print(frameCount + " ");
-  print("ballpos = " + ball);
-  ballRad = max(ballSize.x, ballSize.y) / 2;
-  lastBounce++;
-  shake(ballSpeed.x/10);
-  //println("fr = " + frameRate);
-  //background(200, 200, bg);
+  if (debug) { 
+    ballSpeed.set(0, 0);
+    gravity.set(0, 0);
+    print(frameCount + " ");
+  }
   //background(c1);
-  runShader();
-  
-  //fill(255, 200);
-  //rect(0,0,width,height);
-  mouseForce.set(mouseX - pmouseX, mouseY - pmouseY);
-  mouseForce.normalize();
-  mouseForce.mult(mouseFDiff + 0);
-  //println("mouseF = " + mouseForce);
-
-  //rect(0, 0, width, height); 
-  //clock face attempt
-  fill(bg);
-  bg = 255;
-  if (scoreMode == "circle" ) {
-    strokeWeight(scaleStr);
-    stroke(200, 250, 250);
-    stroke(c3);
-    fill(c2);
-    ellipse(points[1].x, points[1].y, width, width);
-  }
-  noStroke();
-  fill(0);
-  //rect(0, 0, width * value/5, 20); //top meter
-  fill(c4);
-  float txtSize = constrain(score * 10, 10, 600);
-  textAlign(CENTER);
-  if (!pause) {
-    textSize(txtSize);
-    text("" + score, width/2, height/2);
-  } else {
-    textSize(400);
-    text("[ PAUSED ]", width/2, height/2);
-  }
-
-
-  //draw paddle / clockhands/whatever
-  fill(c3);
-  beginShape();
-  curveVertex(points[0].x, height* 0.98);
-  for (int i = 0; i < points.length; i++) {
-    curveVertex(points[i].x, points[i].y);
-  }
-  curveVertex(points[points.length-1].x, height * 0.98);
-  endShape();
-    ellipse(points[1].x, points[1].y, 20, 20); 
-      line(points[1].x, points[1].y, points[0].x, points[0].y);
-    
-  
-    float currentAngle = PVector.angleBetween(points[1], points[0]);
-    //divide angle by radius
-    float handRad = dist(points[0].x, points[0].y, points[1].x, points[1].y);
-    currentAngle = degrees(currentAngle) / handRad;
-    
-      println();
-     println(" angle= " + angle + " currentAngle= " + currentAngle);
-    if (degrees(angle) - degrees(currentAngle) < 2){
-      //angle = 0;
-      println("adding ANGLE");
-      angle = 0;
-      angle -= currentAngle;
-    } else {
-      println("RESETtING ANGLE");
-     angle = 0; 
-    }
-     hourAngle = -angle/6;
-    //}
-
-
-  pushMatrix();
-    translate(points[1].x, points[1].y);
-  
-    hourHand.set(50, -width/4); 
-    float rota = map(sin(frameCount), -1, 1, 0, 360);
-    if (debug) print(" degRot= " +rota);
-    rotate(-hourAngle/60);
-    //draw hour hand
-    //fill(random(255), 255, 255);
-    beginShape();
-    curveVertex(hourHand.x, height/2);
-    curveVertex(hourHand.x, hourHand.y);
-    curveVertex(0, 0);
-    //ellipse(hourHand.x, hourHand.y, 100, 100);
-    //curveVertex(points[1].x, points[1].y);
-    curveVertex(hourHand.x, height/2);
-    endShape();
-
-    line(0, 0, hourHand.x, hourHand.y);
-  popMatrix();
-  
-  /* OLD HOUR HAND
-  
-      hourHand.set(points[1].x-5, points[1].y - width/4); 
-    //draw hour hand
-    //fill(random(255), 255, 255);
-    beginShape();
-    curveVertex(hourHand.x, height* 0.98);
-    curveVertex(hourHand.x, hourHand.y);
-    curveVertex(points[1].x, points[1].y);
-    //ellipse(hourHand.x, hourHand.y, 100, 100);
-    //curveVertex(points[1].x, points[1].y);
-    line(points[1].x, points[1].y, hourHand.x, hourHand.y);
-    curveVertex(hourHand.x, height * 0.98);
-    endShape();
-    
-    */
-  
-  
-  
-  ballSpeed.add(gravity);//
-  //ballSpeed.set(0, 0);
-  checkLine(ball, ballSize, points[1], points[0]);
-  checkWalls();
-  if (scoreMode.equals("circle")) checkCircle();
-  updatePos();
-  //animate the ball squish
-  if (squee) squeeze(); 
-  if (squoo) squooze();
-
-  fill(ballColor);
-  ellipse(ball.x, ball.y, ballSize.x, ballSize.y);
-
-
-  float totSpeed = abs(ballSpeed.x) + abs(ballSpeed.y);
-  totSpeed /= 10.0;
-  //println("totSpeed = " + totSpeed);
-  showTrail(totSpeed, 5, false);
-
-  if (movePos) {
-    repose();
-  }
+  runShader(shader1);
+  calcMForce();
+  drawClock();
+  drawScore();
+  drawHands();
+  updateBall();
+  drawBall(true);
+  repose(); //move clock
 
   if (mousePressed) {
     mouse.set(mouseX, mouseY);
   }
 
-
-  points[0].set(mouseX, mouseY);
-  points[1].add(gravity);
+  updateClock();
 
 
   if (debug) println();
@@ -282,6 +160,7 @@ void mousePressed() {
   movePos = true;
   mouse.set(mouseX, mouseY);
 }
+
 
 
 

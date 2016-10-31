@@ -1,16 +1,20 @@
 
-void checkLine(PVector b, PVector bS, PVector pt1, PVector pt2) {
-    int oldFill = g.fillColor;
+
+
+void checkLine(PVector b, PVector bS, PVector pt1, PVector pt2, boolean doBounce) {
   float w = pt2.x - pt1.x; 
   float h = pt2.y - pt1.y;
   boolean justCross = false;
   value = int(abs(5 * (100/w))); //currently only showing based on x distances
+
+
+  xInter.set(0, 0);
+  yInter.set(0, 0);
+  xyDist.set(0, 0);
+  xyInter.set(0, 0); //xyinter represents the closest inter to the ball
   //println(value);
   //if (w > 100){ //distance too great to make points  //}
-  PVector xInter = new PVector(0,0);
-  PVector yInter = new PVector(0,0);
-  PVector xyDist = new PVector(0,0);
-    PVector xyInter = new PVector(0,0); //xyinter represents the closest inter to the ball
+
   if (debug) print(" balldir="+ findDir() + ",");
 
   if ((b.x > pt1.x && b.x < pt2.x) || (b.x > pt2.x && b.x < pt1.x)) {
@@ -22,13 +26,13 @@ void checkLine(PVector b, PVector bS, PVector pt1, PVector pt2) {
         if (debug) print(" just hit from below");
         justCross = true;
       }
-      above = true; 
+      above = true;
     } else { //currently below
       if (above) {
         if (debug) print(" just hit from above");
-      justCross = true;
+        justCross = true;
       }
-      above = false; 
+      above = false;
     }
   } 
 
@@ -44,74 +48,54 @@ void checkLine(PVector b, PVector bS, PVector pt1, PVector pt2) {
       left = true;
     } else { //currently below
       if (left) {
-       if (debug) print(" just hit from left?");
+        if (debug) print(" just hit from left?");
         justCross = true;
       }
       left = false;
     }
   }
-    
-    
-    if (dist(xInter.x, xInter.y, b.x, b.y) < dist(yInter.x, yInter.y, b.x, b.y)){
-      xyInter = xInter.copy();
-      //print(" copying xInter");
-    } else {
-     xyInter = yInter.copy(); 
-      //print(" copying yInter");
-    }
-
-    xyDist.set(xInter.dist(b), yInter.dist(b));
-    PVector oldxyDist = new PVector(xInter.dist(ballTrail[1]), yInter.dist(ballTrail[1]));
-    float currentDist = min(xyDist.x, xyDist.y);
-    float prevDist = min(oldxyDist.x, oldxyDist.y);  ballColor = color(max(red(c3), 255-abs(currentDist))); //the color c3 is monochromatic, so just trying to retrieve one of the values
-    
-    xyDist.set(xInter.y - b.y, yInter.x - b.x);
-    xyDist = xyDist.normalize();
-    print(" justCross=" + justCross);
-    
-  
-   
-    
-    
-    
-    
-    
-    
-    
-    if (debug) print(" currentdist= "+ currentDist+ "  prevDist= " + prevDist);
-    //if (currentDist < prevDist) {
-      if (min(prevDist, currentDist) < ballRad) {
-        if (justCross){
-        //armFree = false;
-        if (debug) print(" ATTEMPT LINE BOUNCE");
-
-      //if (debug) print(" ballApproaching");
-        //xyDist.mult(1.01); //multiply by some force
-        print(" xyDist(neg)=" + xyDist);
-        bounce(xyDist.x, xyDist.y, true);
-     // }
-      }
-  } 
-  
 
 
-  if (debug) {
-    
-    //if (yInter != new PVector(0,0)){
-    //store and restore old color... display debug indicator of where intersection would be
-    fill(0, 255, 0);
-    ellipse(yInter.x, yInter.y, 50, 50);
-    //}
-
-    //if (xInter != new PVector(0,0)){
-    fill(255, 0, 0);
-    ellipse(xInter.x, xInter.y, 50, 50);
-    //}
-    
-    fill(0, 0, 255);
-    ellipse(xyInter.x, xyInter.y, 15, 15);
+  if (dist(xInter.x, xInter.y, b.x, b.y) < dist(yInter.x, yInter.y, b.x, b.y)) {
+    xyInter = xInter.copy();
+    //print(" copying xInter");
+  } else {
+    xyInter = yInter.copy(); 
+    //print(" copying yInter");
   }
-    fill(oldFill);
+
+  xyDist.set(xInter.dist(b), yInter.dist(b));
+  PVector oldxyDist = new PVector(xInter.dist(ballTrail[1]), yInter.dist(ballTrail[1]));
+  float currentDist = min(xyDist.x, xyDist.y);
+  float prevDist = min(oldxyDist.x, oldxyDist.y);  
+  ballColor = color(max(red(c3), 255-abs(currentDist))); //the color c3 is monochromatic, so just trying to retrieve one of the values
+
+
+  xyDist.set(xInter.y - b.y, yInter.x - b.x);
+  
+  if (!doBounce) drawDebug();
+  xyDist = xyDist.normalize();
+
+  print(" justCross=" + justCross);
+
+
+
+
+
+
+
+
+
+
+  if (debug) print(" currentdist= "+ currentDist+ "  prevDist= " + prevDist);
+  if (min(prevDist, currentDist) < ballRad) {
+    if (justCross) {
+      if (debug) print(" ATTEMPT LINE BOUNCE");
+
+      print(" xyDist(neg)=" + xyDist);
+      if (doBounce) bounce(xyDist.x, xyDist.y, true);
+    }
+  }
 }
 
 void checkWalls() {
@@ -216,7 +200,7 @@ void checkCircle() {
         //ball = ballTrail[3];
         bg = 220;
         hitSnd.rewind();
-         hitSnd.play();
+        hitSnd.play();
       }
     }
   }

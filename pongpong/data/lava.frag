@@ -7,7 +7,7 @@ precision mediump float;
 
 uniform vec2 u_resolution;
 uniform vec2 u_mouse;
-uniform float u_time;
+uniform double u_time;
 uniform vec2 u_contrast;
 uniform vec3 u_color;
 
@@ -71,6 +71,24 @@ void main() {
     //gl_FragColor = vec4(0.8+color.x, 0.98+color.y, 0.98+color.z,1.0); //blue bg w/white blobs
     //gl_FragColor = vec4(color.x-0.2, color.y-0.02, color.z-0.02,1.0); //black bg w/blue blobs
     //color = vec3(min(color.x, 0.1), min(color.y, 0.1), min(color.z, 0.1));
-    gl_FragColor = vec4(color.x + u_color.x, color.y + u_color.y, color.z + u_color.z,1.0); //black bg w/blue blobs
+	float value = color.x;
+	float low1 = 0.0;
+	float low2 = 0.784;
+	float high1 = 1.0;
+	float high2 = 0.98;
+	float newX = low2 + (value - low1) * (high2 - low2) / (high1 - low1);
+	
+	value = color.y;
+	low2 = 0.98;
+	high2 = 0.784;
+	
+	float newY = low2 + (value - low1) * (high2 - low2) / (high1 - low1);
+	value = color.z;
+	low2 = 0.98;
+	high2 = 0.784;
+	float newZ = low2 + (value - low1) * (high2 - low2) / (high1 - low1);
+	
+    gl_FragColor = vec4(newX + u_color.x, newY + u_color.y, newZ + u_color.z,1.0); //black bg w/blue blobs
+    //gl_FragColor = vec4(color.x + u_color.x, color.y + u_color.y, color.z + u_color.z,1.0); //black bg w/blue blobs
 
 }
