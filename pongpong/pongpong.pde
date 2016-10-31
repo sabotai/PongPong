@@ -6,7 +6,7 @@ import ddf.minim.spi.*;
 import ddf.minim.ugens.*;
 
 Minim minim;
-AudioPlayer bounceSnd, hitSnd, loseSnd;
+AudioPlayer bounceSnd, hitSnd, loseSnd, rumbleSnd;
 
 PShader shader1;
 
@@ -66,9 +66,11 @@ void setup() {
   size(1920, 1080, P3D);
 smooth(8); //may not work everywhere
   minim = new Minim(this);
+  rumbleSnd = minim.loadFile("57532__dolfeus__earthshake-7kick8.wav");
   bounceSnd = minim.loadFile("38867__m-red__clock-tac.wav", 2048);
   hitSnd = minim.loadFile("Hit_Hurt26.wav", 2048);
   loseSnd = minim.loadFile("253174__suntemple__retro-you-lose-sfx.wav", 2048);
+    rumbleSnd.setGain(-9);
   txtr = loadImage("bricks.jpg");
   if (mute) {
     bounceSnd.mute();
@@ -110,10 +112,16 @@ smooth(8); //may not work everywhere
   ballSize = new PVector(100, 100);
   above = true;
   if (points[0] == null) {
-    for (int i = 0; i < points.length; i++) {
+    //for (int i = 0; i < points.length; i++) {
       //randomly on bottom half of screen
-      points[i] = new PVector(random(0, width), random(height/2, height));
-    }
+      points[0] = new PVector(random(0, width), random(height/2, height));
+      points[1] = new PVector(width/2, height/1.3);
+    //}
+  } else {
+      mouse.set(random(width/3, width/1.5), random(height/2, height));
+      movePos = true;
+      repose();
+    
   }
   hourHand = new PVector(points[1].x, points[1].y - width/4); 
   ball = new PVector(points[1].x, points[1].y - width/5);
@@ -145,9 +153,9 @@ void draw() {
   background(c1);
   runShader(shader1);
   calcMForce();
+  updateBall();
   drawClock();
   drawHands();
-  updateBall();
   drawScore();
   drawBall(true);
   repose(); //move clock

@@ -10,12 +10,13 @@ void bounce(float xs, float ys, boolean scoring) {
     if (debug) print(" vol=" + vol);
     bounceSnd.setGain(-8);
     hitSnd.setGain(vol);
+    
     lastBounce = 0;
     //bounceSnd.setPan(pan);   
     //bounceSnd
     //hitSnd.setPan(pan);
     bounceSnd.rewind();
-    bounceSnd.play();
+    if (scoring) bounceSnd.play();
     
     
     //attempt at correcting weird problem which would reverse the ys after being passed in
@@ -66,7 +67,7 @@ void bounce(float xs, float ys, boolean scoring) {
         score++;
       }
 
-      scaleStr+=2;
+      scaleStr+=3;
       //println("scored! score=" + score);
     }
 

@@ -73,7 +73,7 @@ void checkLine(PVector b, PVector bS, PVector pt1, PVector pt2, boolean doBounce
 
 
   xyDist.set(xInter.y - b.y, yInter.x - b.x);
-  
+
   if (!doBounce) drawDebug();
   xyDist = xyDist.normalize();
 
@@ -110,12 +110,18 @@ void checkWalls() {
 
     if (debug) print(" ATTEMPT WALL BOUNCE");
     shakeTime+=0.5;
+      rumbleSnd.loop(0);
+      rumbleSnd.rewind();
+      rumbleSnd.play();
   }
   if (ball.x > width - ballRad) { //right wall
     bounce(-rem, rem, false);
     ball.x = width- ballRad - 3;
     shakeTime+=0.5;
     if (debug) print(" ATTEMPT WALL BOUNCE");
+      rumbleSnd.loop(0);
+      rumbleSnd.rewind();
+      rumbleSnd.play();
   }
 
   if (ball.y < ballRad) { //top
@@ -123,13 +129,20 @@ void checkWalls() {
     ball.y = ballRad + 3;
     shakeTime+=0.5;
     if (debug) print(" ATTEMPT WALL BOUNCE");
+      rumbleSnd.loop(0);
+      rumbleSnd.rewind();
+      rumbleSnd.play();
   }
 
   if (ball.y > height - ballRad) { //bottom
 
     bounce(rem, -rem, false);
     ball.y = height - ballRad - 3;
+    shakeTime+=0.3;
     if (debug) print(" ATTEMPT WALL BOUNCE");
+      rumbleSnd.loop(0);
+      rumbleSnd.rewind();
+      rumbleSnd.play();
 
 
     if (scoreMode.equals("floor")) {

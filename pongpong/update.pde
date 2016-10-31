@@ -6,7 +6,7 @@ void updateBall(){
   
   ballRad = max(ballSize.x, ballSize.y) / 2;
   lastBounce++;
-  shake(ballSpeed.x/10);
+  shake((abs(ballSpeed.x) + abs(ballSpeed.y))/10);
   
   
   ballSpeed.add(gravity);//
