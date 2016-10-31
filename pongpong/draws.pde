@@ -3,7 +3,7 @@
 void drawHands() {
 
   //draw paddle / clockhands/whatever
-  fill(c3);
+  fill(c5);
   beginShape();
   curveVertex(points[0].x, height* 0.98);
   for (int i = 0; i < points.length; i++) {
@@ -25,13 +25,14 @@ void drawHands() {
   if (degrees(angle) - degrees(currentAngle) < 2) {
     //angle = 0;
     println("adding ANGLE");
-    angle = 0;
+    //angle = 0;
     angle -= currentAngle;
   } else {
     println("RESETtING ANGLE");
     angle = 0;
   }
   hourAngle = -angle/6;
+  //hourAngle = angle;
   //}
 
 
@@ -39,9 +40,11 @@ void drawHands() {
   translate(points[1].x, points[1].y);
 
   hourHand.set(50, -width/4); 
-  float rota = map(sin(frameCount), -1, 1, 0, 360);
+  float rota = map(sin(frameCount * 0.0001), -1, 1, 0, 360);
   if (debug) print(" degRot= " +rota);
-  rotate(-hourAngle/60);
+  //rotate(-hourAngle/60);
+  rotate(radians((score % 60) * 6));
+
   //draw hour hand
   //fill(random(255), 255, 255);
   beginShape();
@@ -88,61 +91,66 @@ void drawBall(boolean trail) {
 }
 
 
-void drawClock(){
- 
+void drawClock() {
+
   //clock face attempt
-  fill(bg);
-  bg = 255;
   if (scoreMode == "circle" ) {
     strokeWeight(scaleStr);
-    stroke(200, 250, 250);
-    stroke(c3);
+    //stroke(200, 250, 250);
+    stroke(c4);
+    if (pause) noStroke();
     fill(c2);
+    blendMode(MULTIPLY);
     //noFill(); //see through
-    ellipse(points[1].x, points[1].y, width, width);
-  } 
-  
+    //texture(txtr);
+    ellipse(points[1].x, points[1].y, clockDia, clockDia);
+    blendMode(BLEND);
+    noFill();
+    ellipse(points[1].x, points[1].y, clockDia, clockDia);
+    noStroke();
+  }
 }
 
-void drawScore(){
-    noStroke();
-  fill(0);
+void drawScore() {
+  blendMode(REPLACE);
+  noStroke();
   //rect(0, 0, width * value/5, 20); //top meter
   fill(c4);
   float txtSize = constrain(score * 10, 10, 600);
   textAlign(CENTER);
+  textSize(txtSize);
   if (!pause) {
-    textSize(txtSize);
     text("" + score, width/2, height/2);
   } else {
-    textSize(400);
+    textSize(200);
     text("[ PAUSED ]", width/2, height/2);
+    noLoop();
   }
-
+  blendMode(BLEND);
 }
 
 
-void drawDebug(){
-  
-    int oldFill = g.fillColor;
-    
-    float totDist = abs(xyDist.x) + abs(xyDist.y);
-    float bal = abs(xyDist.x) / totDist;
-    
-    //disregard if one of them is valued at 0
-    if (dist(yInter.x, yInter.y, 0, 0) < 1){
-      bal = 0;
-    } 
-    if (dist(xInter.x, xInter.y, 0, 0) < 1){
-      bal = 1;
-    }
-    println();
-    println();
-    println(" bal= " + bal + " totDist= " + totDist);
-    println();
-    xyInter.set(lerp(xInter.x, yInter.x, bal ), lerp(xInter.y, yInter.y, bal));
-    
-    if (debug){
+void drawDebug() {
+
+  int oldFill = g.fillColor;
+
+  float totDist = abs(xyDist.x) + abs(xyDist.y);
+  float bal = abs(xyDist.x) / totDist;
+
+  //disregard if one of them is valued at 0
+  if (dist(yInter.x, yInter.y, 0, 0) < 1) {
+    bal = 0;
+  } 
+  if (dist(xInter.x, xInter.y, 0, 0) < 1) {
+    bal = 1;
+  }
+  println();
+  println();
+  println(" bal= " + bal + " totDist= " + totDist);
+  println();
+  xyInter.set(lerp(xInter.x, yInter.x, bal ), lerp(xInter.y, yInter.y, bal));
+
+  if (debug) {
     //store and restore old color... display debug indicator of where intersection would be
     fill(0, 255, 0);
     ellipse(yInter.x, yInter.y, 50, 50);
@@ -152,9 +160,9 @@ void drawDebug(){
     fill(255, 0, 0);
     ellipse(xInter.x, xInter.y, 50, 50);
     //}
-    
+
     fill(0, 0, 255);
     ellipse(xyInter.x, xyInter.y, 15, 15);
     fill(oldFill);
-}
+  }
 }

@@ -67,8 +67,9 @@ void checkLine(PVector b, PVector bS, PVector pt1, PVector pt2, boolean doBounce
   xyDist.set(xInter.dist(b), yInter.dist(b));
   PVector oldxyDist = new PVector(xInter.dist(ballTrail[1]), yInter.dist(ballTrail[1]));
   float currentDist = min(xyDist.x, xyDist.y);
-  float prevDist = min(oldxyDist.x, oldxyDist.y);  
-  ballColor = color(max(red(c3), 255-abs(currentDist))); //the color c3 is monochromatic, so just trying to retrieve one of the values
+  float prevDist = min(oldxyDist.x, oldxyDist.y); 
+  float colorBright = (280 - max(red(c3), 255-abs(currentDist))) / 255;
+  ballColor = color(red(c1) * colorBright, green(c1) * colorBright, blue(c1) * colorBright); //the color c3 is monochromatic, so just trying to retrieve one of the values
 
 
   xyDist.set(xInter.y - b.y, yInter.x - b.x);
@@ -147,9 +148,9 @@ void checkCircle() {
 
   float cirDist = ball.dist(points[1]);
   //println("cirdist = " + cirDist);
-  float cirThresh = (width/2)-ballRad*2;
+  float cirThresh = (clockDia/2) - ballRad*2;
 
-  if (cirDist > cirThresh - scaleStr/5) {
+  if (cirDist > cirThresh - scaleStr/3) {
     if (scoreMode.equals("circle")) {
 
 
@@ -173,7 +174,7 @@ void checkCircle() {
         println(" STROKE= " + scaleStr);
         //score--;
 
-        scaleStr-=10;
+        scaleStr-=5;
         //scaleStr = max(scaleStr, 0);
 
 

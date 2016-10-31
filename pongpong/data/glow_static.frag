@@ -2,16 +2,18 @@
 precision highp float;
 
 uniform float u_time;
-uniform vec2 u_mouse;
+uniform vec3 u_mouse;
+uniform vec3 u_ball;
 uniform vec2 u_resolution;
 uniform float u_bright; // 0.3 default
 uniform float u_size; //0.5 default
 uniform vec3 u_color; //0.7, 0.3, 0.3 default
 uniform vec3 u_minColor;
+uniform vec2 u_contrast; //0.5, 4.0 default
 
-float ball(vec2 p) {
+float ball(vec2 p, float siize) {
     vec2 r = vec2(p.x, p.y);    
-    return u_size / length(r); //divisor determines the size of the central bright area
+    return (siize) / length(r); //divisor determines the size of the central bright area
 }
 
 float map(float value, float low1, float high1, float low2, float high2){
@@ -33,9 +35,14 @@ void main(void) {
     //p.y *= u_mouse.x / u_mouse.y;
 
     float col = u_bright; // starting value determines min brightness
-    //col += ball(p, 10000000000000.0, 0.00001, 0.1, 0.2);
-    col += ball(p); //determines the overall swaying
-    col = max(mod(col, 0.5), min(col, 4.0)); // second number is how bright
+    //col += ball(p, u_mouse.z); //determines the overall swaying
+
+    q =  gl_FragCoord.xy /  u_resolution.xy;
+    q -= u_ball.xy;
+    p = -1.0 + 2.0 * q;
+    col += ball(p, u_ball.z * u_size); //determines the overall swaying
+
+    col = max(mod(col, u_contrast.x), min(col, u_contrast.y)); // second number is how bright
 
     vec3 finalColor = vec3(col * u_color.x, col * u_color.y, col * u_color.z);
 

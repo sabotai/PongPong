@@ -10,6 +10,7 @@ AudioPlayer bounceSnd, hitSnd, loseSnd;
 
 PShader shader1;
 
+PFont myFont;
 
 //import processing.sound.*;
 
@@ -18,7 +19,7 @@ PShader shader1;
 
 boolean debug = false;
 boolean pause = false;
-boolean mute = true;
+boolean mute = false;
 
 PVector ball, ballSpeed, ballSize;
 PVector gravity;
@@ -30,6 +31,7 @@ int score = 0;
 boolean angleUp;
 float value = 0;
 float scaleStr;
+float clockDia;
 
 boolean squee, squoo;
 PVector mouseForce;
@@ -46,7 +48,7 @@ String scoreMode = "circle";
 
 float bg;
 
-color c1, c2, c3, c4, ballColor;
+color c1, c2, c3, c4, c5, ballColor;
 
 boolean armFree; //keep track of whether the arm is allowed to move (so ball doesnt get stuck)
 int lastBounce, bounceThresh;  
@@ -58,12 +60,16 @@ float ballRad; //keep track of the largest ballSize variable (for collisions
   PVector xyDist = new PVector(0,0);
 PVector xyInter = new PVector(0,0); //xyinter represents the closest inter to the ball
 
+PImage txtr;
+
 void setup() {
   size(1920, 1080, P3D);
+smooth(8); //may not work everywhere
   minim = new Minim(this);
   bounceSnd = minim.loadFile("38867__m-red__clock-tac.wav", 2048);
   hitSnd = minim.loadFile("Hit_Hurt26.wav", 2048);
   loseSnd = minim.loadFile("253174__suntemple__retro-you-lose-sfx.wav", 2048);
+  txtr = loadImage("bricks.jpg");
   if (mute) {
     bounceSnd.mute();
     hitSnd.mute();
@@ -77,20 +83,16 @@ void setup() {
   c2 = color(250, 200, 200); //0.98, 0.784, 0.784
   c3 = color(50, 50, 50);
   c4 = color(240, 240, 240);
+  c5 = color(255, 255, 255);
   ballColor = c3;
   hourAngle = 1;
+  clockDia = width;
 
   lastBounce = 5;
   bounceThresh = 1;
   armFree = true;
-  //if (bounceSnd == null){
-  //bounceSnd = new SoundFile(this, "Powerup7.wav");
-  //}
-
-  // if (hitSnd == null){
-  //  hitSnd = new SoundFile(this, "Explosion9.wav");
-  // }
   if (debug) println("SETUP");
+  
   bg = 250;
   strokeCap(PROJECT);
   movePos = false;
@@ -104,9 +106,7 @@ void setup() {
     ballTrail[i] = new PVector(i, i);
   }
 
-  // if (ballSpeed == null){ //dont reset speed unless first time
   ballSpeed = new PVector(10, -10);
-  // }
   ballSize = new PVector(100, 100);
   above = true;
   if (points[0] == null) {
@@ -117,9 +117,13 @@ void setup() {
   }
   hourHand = new PVector(points[1].x, points[1].y - width/4); 
   ball = new PVector(points[1].x, points[1].y - width/5);
-  scaleStr = 100;
+  scaleStr = 10;
   mouseForce = new PVector((mouseX - pmouseX), (mouseY - pmouseY));
   mouse = new PVector(mouseX, mouseY);
+  
+  myFont = createFont("neuropol.ttf", 180);
+  textMode(SHAPE);
+  textFont(myFont);
 }
 
 
@@ -134,15 +138,17 @@ void draw() {
   if (debug) { 
     ballSpeed.set(0, 0);
     gravity.set(0, 0);
+    scaleStr = 10000;
+    clockDia = 1000000;
     print(frameCount + " ");
   }
-  //background(c1);
+  background(c1);
   runShader(shader1);
   calcMForce();
   drawClock();
-  drawScore();
   drawHands();
   updateBall();
+  drawScore();
   drawBall(true);
   repose(); //move clock
 
@@ -154,6 +160,17 @@ void draw() {
 
 
   if (debug) println();
+  
+  /*
+  fill(150);
+  strokeWeight(150);
+  //noStroke();
+  ellipse(mouseX, mouseY, 1000, 1000);
+  textSize(800);
+  fill(c2);
+  stroke(c2);
+  text("ewtawetasdf", width/2, height/2);
+  */
 }
 
 void mousePressed() {
@@ -171,7 +188,6 @@ void keyPressed() {
     fill(c4 );
     textSize(300);
     text("[ PAUSED ]", width/2, height/1.3);
-    noLoop();
   } else {
     loop();
   }
